@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Bot Message Sender</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #eff2f4;
+            color: #4a4a4a;
+            margin: 20px;
+        }
+
+        h2 {
+            color: #0088cc;
+        }
+
+        form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555555;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #dddddd;
+            border-radius: 3px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #0088cc;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        button:hover {
+            background-color: #005580;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h2>إرسال رسالة داخل قناة تيليجرام عبر توكن البوت</h2>
+    <form id="telegramForm">
+        <label for="channelLink">معرف القناة:</label>
+        <input type="text" id="channelLink" name="chat_id" placeholder="أدخل معرف القناه">
+        
+        <label for="botToken">توكن البوت:</label>
+        <input type="text" id="botToken" name="token" placeholder="أدخل توكن البوت">
+        
+        <label for="message">الرسالة المراد إرسالها:</label>
+        <textarea id="message" name="text" rows="4" placeholder="أدخل الرسالة المراد إرسالها عبر البوت"></textarea>
+        
+        <button type="button" onclick="sendMessage()">إرسال الرسالة</button>
+    </form>
+
+    <script>
+        function sendMessage() {
+            var chatId = document.getElementById('channelLink').value;
+            var botToken = document.getElementById('botToken').value;
+            var messageText = document.getElementById('message').value;
+
+            var formData = new FormData();
+            formData.append('chat_id', chatId);
+            formData.append('text', messageText);
+            formData.append('token', botToken);
+
+            fetch('https://api.telegram.org/bot' + botToken + '/sendMessage', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    alert('تم إرسال الرسالة بنجاح!');
+                } else {
+                    alert('حدثت مشكلة أثناء إرسال الرسالة.');
+                }
+            })
+            .catch(error => {
+                console.error('حدث خطأ: ', error);
+                alert('حدث خطأ أثناء محاولة إرسال الرسالة.');
+            });
+        }
+    </script>
+</body>
+</html>
